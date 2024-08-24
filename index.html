@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Formulário de Processo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            min-width: 250px;
+            word-wrap: break-word;
+
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            min-width: 400px;
+            max-width: 1400px;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 8px;
+            margin: 4px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        input[type="file"] {
+            padding: 8px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="file"]:hover {
+            background-color: #0056b3;
+        }
+
+        .importPDF {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .divTable {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .fixed-size-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .fixed-size-table th,
+        .fixed-size-table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        #botaoVoltar {
+            background-color: #dc3545;
+            margin-right: 50px;
+        }
+
+        #botaoVoltar:hover {
+            background-color: #c82333;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .certralizaPelamor {
+            display: flex;
+            justify-content: center;
+        }
+
+        #errorMessages {
+            font-size: x-large;
+            color: red;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        @media print {
+            @page {
+                margin-bottom: 1px;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            .fixed-size-table {
+                font-size: 16px;
+                width: 100%;
+                table-layout: fixed;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                font-family: 'Times New Roman', Times, serif;
+            }
+
+            .fixed-size-table th,
+            .fixed-size-table td {
+                padding: 6px;
+            }
+
+            .tittle {
+                font-size: 15px;
+                color: rgb(63, 63, 63);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="forms">
+        <div class="divTable">
+            <table border="2" id="tabelaFormulario" class="tabelaFormulario">
+                <thead>
+                    <tr>
+                        <th colspan="2">
+                            <center>FICHA DE ACOMPANHAMENTO DE PROCESSO</center>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cliente/Projeto: </span></td>
+                        <td><input id="cliente" name="cliente" type="text" required=""></td>
+                    </tr>
+                    <tr>
+                        <td>Cliente Final: </td>
+                        <td><input id="clienteFinal" name="clienteFinal" type="text">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>N° telefone Cliente Final: </span></td>
+                        <td><input id="telCliente" name="telCliente" type="text" oninput="formatPhone(this)"></td>
+                    </tr>
+                    <tr>
+                        <td>Vendedor: </span></td>
+                        <td><input id="vendedor" name="vendedor" type="text" required=""></td>
+                    </tr>
+                    <tr>
+                        <td>N. Pedido: </span></td>
+                        <td><input id="pedido" name="pedido" type="text" oninput="formatPedido(this)" required></td>
+                    </tr>
+                    <tr>
+                        <td>Data Entrada: </span></td>
+                        <td><input id="dataentrada" name="dataentrada" type="date" required=""></td>
+                    </tr>
+                    <tr>
+                        <td>Qtd Planos: </span></td>
+                        <td><input id="qtdplano" name="qtdplano" type="number" required=""></td>
+                    </tr>
+                    <tr>
+                        <td> Cortes: </span></td>
+                        <td><input id="cortes" name="cortes" type="number" required="" value="0"></td>
+                    </tr>
+                    <tr>
+                        <td> Engrosso: </span></td>
+                        <td><input id="engrosso" name="engrosso" type="number" required=""></td>
+                    </tr>
+                    <tr>
+                        <td> Fitagem: </span></td>
+                        <td><input id="fitagem" name="fitagem" type="number" required="" value="0"></td>
+                    </tr>
+                    <tr>
+                        <td> Esp. Engrosso: </span></td>
+                        <td><input id="espengrosso" name="espengrosso" type="number" required="" value=""></td>
+                    </tr>
+                    <tr>
+                        <td> Furo Dob: </span></td>
+                        <td><input id="furodob" name="furodob" type="number" required="" value="0"></td>
+                    </tr>
+                    <tr>
+                        <td> Usin. 45: </span></td>
+                        <td><input id="usinagem" name="usinagem" type="number" required=""></td>
+                    </tr>
+                    <tr>
+                        <td> Furo sist: </span></td>
+                        <td><input id="furosist" name="furosist" type="number" required="" value="0"></td>
+                    </tr>
+                    <tr>
+                        <td> Router: </span></td>
+                        <td><input id="router" name="router" type="number" required=""></td>
+                    </tr>
+                    <tr>
+                        <td> Canal: </span><br>
+                        </td>
+                        <td><input id="canal" name="canal" type="number" required="" value="0"> </td>
+
+                    </tr>
+                    <tr>
+                        <td>Tipo de canal: </span></td>
+                        <td><input id="tipoCanal" name="tipoCanal" type="text" required=""></td>
+                    </tr>
+                    <tr>
+                        <td> Router+Fita: </span></td>
+                        <td><input id="routerFita" name="routerFita" type="number" required=""></td>
+                    </tr>
+                    <tr>
+                        <td> TT peças do pedido: </span></td>
+                        <td><input id="ttpecas" name="ttpecas" type="number" required=""></td>
+                    </tr>
+                    <tr>
+                        <td> Corte Perf: </span></td>
+                        <td><input id="cortePerfil" name="cortePerfil" type="number" required=""></td>
+                    </tr>
+                    <tr>
+                        <td> Material da central: </span></td>
+                        <td>
+                            <select id="materialCentral" required="">
+                                <option value="Sim"> Sim
+                                </option>
+                                <option value="Não"> Não
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Uso de Sobras: </span>
+                        </td>
+                        <td>
+                            <select id="usoSobra" required="">
+                                <option value="Sim"> Sim
+                                </option>
+                                <option value="Não"> Não
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Entregar Sobras? </span>
+                        </td>
+                        <td>
+                            <select id="entregaSobras" required="">
+                                <option value="Sim"> Sim
+                                </option>
+                                <option value="Não"> NÃO
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <center> <b>FICHA DE ACEITE</b></center>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Entregar? </span>
+                        </td>
+                        <td>
+                            <select id="entregar" required="">
+                                <option value="Sim"> Sim
+                                </option>
+                                <option value="Não"> Não
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> Previsao para retirada: </span></td>
+                        <td><input id="previsao" name="previsao" type="date" required=""></td>
+                    </tr>
+                    <tr>
+                        <td> Previsao de Entrega: </span></td>
+                        <td><input id="previsaoEntrega" name="previsaoEntrega" type="date" required=""></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Endereço: </span>
+                        </td>
+                        <td><input id="endereco" name="endereco" type="text" required=""></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Prédio/sobrado: </span>
+                        </td>
+                        <td>
+                            <select id="predio" required="">
+                                <option value="Sim"> Sim
+                                </option>
+                                <option value="Não"> Não
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>(se possuir escadas) Andares: </span></td>
+                        <td><input id="andares" name="andares" type="number" required=""></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Escada: </span>
+                        </td>
+                        <td>
+                            <select id="escada" required="">
+                                <option value="Sim"> Sim
+                                </option>
+                                <option value="Não"> Não
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="errorMessages"></div>
+        </div>
+        <div class="importPDF">
+            <div>
+                <h2>Importar Dados de PDF</h2>
+                <input type="file" id="pdf-upload" accept="application/pdf"><br><br>
+            </div>
+            <div>
+                <button type="button" onclick="mostrarVisualizacao()">Visualizar Dados</button>
+            </div>
+        </div>
+    </div>
+    <div class="conferenciaDados" style="display: none;">
+        <div class="certralizaPelamor">
+            <table id="tabelaVisualizacao" class="fixed-size-table" border="2">
+                <thead>
+                    <tr>
+                        <th colspan="2" class="tittle">
+                            <center>FICHA DE ACOMPANHAMENTO DE PROCESSO</center>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dados exibidos na conferência -->
+                    <tr>
+                        <td>CLIENTE/OBRA: <b><span id="clienteDisplay"></span></b></td>
+                        <td>VENDEDOR/PEDIDO: <b><span id="vendedorDisplay"></span> - <span
+                                    id="pedidoDisplay"></span></b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Cliente Final/Telefone: <b><span id="clienteFinalDisplay"></span> <span
+                                    id="telClienteDisplay"></span></b></td>
+                    </tr>
+                    <tr>
+                        <td>QTDD PLANOS: <b><span id="qtdplanoDisplay"></span></b></td>
+                        <td>DATA ENTRADA: <b><span id="dataentradaDisplay"></span></b></td>
+                    </tr>
+                    <tr>
+                        <td>CORTES (qtd): <b><span id="cortesDisplay"></span></b></td>
+                        <td>ENGROSSO (Peças): <b><span id="engrossoDisplay"></span></b></td>
+                    </tr>
+                    <tr>
+                        <td>FITAGEM (Metros): <b><span id="fitagemDisplay"></span></b></td>
+                        <td>ESP. ENGR. (mm): <b><span id="espengrossoDisplay"></span></b></td>
+                    </tr>
+                    <tr>
+                        <td>FURO DOB: (Unid): <b><span id="furodobDisplay"></span></b></td>
+                        <td>USIN 45 (Peças): <b><span id="usinagemDisplay"></span></b></td>
+                    </tr>
+                    <tr>
+                        <td>FURO SIST (Peças): <b><span id="furosistDisplay"></span></b></td>
+                        <td>ROUTER: <b><span id="routerDisplay"></span></b></td>
+                    </tr>
+                    <tr>
+                        <td>CANAL: <b><span id="canalDisplay"></span></b></td>
+                        <td>ROUT+FITA (Peças): <b><span id="routerFitaDisplay"></span></b></td>
+                    </tr>
+                    <tr>
+                        <td>TIPO DE CANAL: <b><span id="tipoCanalDisplay"></span></b></td>
+                        <td>TT PEÇAS DO PEDIDO: <b><span id="ttpecasDisplay"></span></b></td>
+                    </tr>
+                    <tr>
+                        <td>CORTE PERF. (Qtdd): <b><span id="cortePerfilDisplay"></span></b></td>
+                        <td>Previsão para retirada em: <b><span id="previsaoDisplay"></span></b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">MATERIAL DA CENTRAL: <b><span id="materialCentralDisplay"></span></b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">USO DE SOBRAS: <b><span id="usoSobraDisplay"></span></b></td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" class="tittle">
+                            <center>FICHA DE ACEITE</center>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>ENTREGAR?: <b><span id="entregarDisplay"></span></b></td>
+                        <td>PREVISÃO PARA ENTREGA: <b><span id="previsaoEntregaDisplay"></span></b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">ENDEREÇO: <b>
+                                <p id="enderecoDisplay" style="margin: 6px 0 0 0;"></p>
+                            </b></td>
+                    </tr>
+                    <tr>
+                        <td>PRÉDIO/SOBRADO: <b><span id="predioDisplay"></span></b></td>
+                        <td>ESCADA: <b><span id="escadaDisplay"></span></b> ANDARES: <b><span
+                                    id="andaresDisplay"></span></b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Entregas em prédios só serão feitas com peças que caibam no elevador de serviço.
+                            Peças maiores serão deixadas no andar da descarga. Havendo necessidade de subir escadas será
+                            cobrado VALOR ADICIONAL de no mínimo R$ 150,00 ou R$30,00/por andar/peça. (O que for maior)
+                            A não informação do uso de escadas no ato da venda, implicará no retorno da mercadoria para
+                            a Promad. <br> <br> <b>Assinatura:________________</b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">ENTREGAR SOBRAS? <b> <span id="entregaSobrasDisplay"></span> </b> <br> <br> 1-
+                            Sobras não entregues ou retiradas, conforme opção acima, serão descartadas imediatamente
+                            após o termino da produção. Não serão aceitas reclamações posteriores <br> 2- Projetos
+                            enviados pelo "Corte Cloud/Promob" NÃO podem ser alterados pela Promad. Os planos enviados
+                            são de total responsabilidade do cliente. Favor conferir antes de liberar para corte. <br>
+                            <br> <b> De acordo em/Data:____/____/_____ </b> <b> Nome:________________________ </b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <center>RECIBO DE ENTREGA / <b><span id="pedidoDisplay"></span></b></center>
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td colspan="2"><b>Material entregue em:____________________ Data:____/____/_____</b> </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Declaro ter recebido e conferido todas as peças e serviços acima relacionados,
+                            dando por encerrado o processo. <br> <br> <b>Data:____/____/_____</b> <b>
+                                Nome:_______________</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <center>PROTOCOLO DE ENTREGA DO PROCESSO / <b><span id="pedidoDisplay"></span></b></center>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><b>SOLICITAÇÃO DE PRODUÇÃO, ENTREGUE EM:_______________
+                                RECEBIDO POR:_______________ VISTO:_______________</b></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="buttons-container">
+            <button id="botaoVoltar" class="no-print" onclick="voltar()"><------ CORRIGIR</button>
+                    <button class="no-print" onclick="imprimir()">Imprimir</button>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script>
+        document.getElementById('pdf-upload').addEventListener('change', function (event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var typedarray = new Uint8Array(e.target.result);
+
+                    pdfjsLib.getDocument(typedarray).promise.then(function (pdf) {
+                        pdf.getPage(1).then(function (page) {
+                            page.getTextContent().then(function (textContent) {
+                                var text = textContent.items.map(item => item.str).join(' ');
+                                console.log(text); // Exibe o texto extraído do PDF no console
+
+                                // Função para extrair e somar valores com base em expressões regulares
+                                function extractAndSum(regex) {
+                                    var match;
+                                    var total = 0;
+                                    while ((match = regex.exec(text)) !== null) {
+                                        total += parseInt(match[1]);
+                                    }
+                                    return total;
+                                }
+
+                                // Regex e campos a serem preenchidos
+                                var regexData = [
+                                    { regex: /(\d+)\s*UN\s*(ser_cor_lam_45g|lam_topo|ser_lam_lar|ser_lam_est)/g, field: 'fitagem' },
+                                    { regex: /(\d+)\s*UN\s*furo_cnc_(20mm|10mm|3mm|15mm|1mm|5mm|8mm)/g, field: 'furosist' },
+                                    { regex: /(\d+)\s*UN\s*(usi_rebaixo_4mm|usi_rasgo_7mm)/g, field: 'canal' },
+                                    { regex: /(\d+)\s*UN\s*furo_cnc_35mm/g, field: 'furodob' },
+                                    { regex: /(\d+)\s*UN\s*ser_corte_015/g, field: 'cortes' }
+                                ];
+
+                                var ragexText = [
+                                    { regex: /Projje_(.+?)\s\d/, field: 'cliente' },
+                                ];
+
+                                var isAnyFieldFilled = false; // Inicializa a variável para checar se algum campo foi preenchido
+
+                                // Preenche os campos com os valores extraídos
+                                regexData.forEach(data => {
+                                    var total = extractAndSum(data.regex);
+                                    if (total > 0) { // Se o total for maior que zero, marca o campo como preenchido
+                                        document.getElementById(data.field).value = total;
+                                        isAnyFieldFilled = true; // Atualiza a variável indicando que pelo menos um campo foi preenchido
+                                        console.log(`${data.field}: ${total}`); // Exibe o valor extraído no console
+                                    } else {
+                                        document.getElementById(data.field).value = '0'; // Limpa o campo caso não tenha valor
+                                        console.log(`${data.field}: (nenhum valor encontrado)`); // Exibe a ausência de valor no console
+                                    }
+                                });
+
+                                // Função para extrair valores com base em expressões regulares e preencher os campos de texto
+                                function extractAndFill(regexData) {
+                                    regexData.forEach(data => {
+                                        var match = data.regex.exec(text);
+                                        if (match) {
+                                            document.getElementById(data.field).value = match[1];
+                                            isAnyFieldFilled = true; // Atualiza a variável indicando que pelo menos um campo foi preenchido
+                                            console.log(`${data.field}: ${match[1]}`); // Exibe o valor extraído no console
+                                        } else {
+                                            document.getElementById(data.field).value = ''; // Limpa o campo caso não tenha valor
+                                            console.log(`${data.field}: (nenhum valor encontrado)`); // Exibe a ausência de valor no console
+                                        }
+                                    });
+                                }
+
+                                extractAndFill(ragexText);
+                            });
+                        });
+                    });
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        });
+
+
+
+        function voltar() {
+            document.querySelector('.forms').style.display = 'block';
+            document.querySelector('.conferenciaDados').style.display = 'none';
+        }
+
+        function imprimir() {
+            window.print();
+        }
+
+        function mostrarVisualizacao() {
+            // Limpar mensagens de erro
+            document.getElementById('errorMessages').textContent = '';
+
+            var camposVazios = [];
+            var dados = document.querySelectorAll('.forms input, .forms select');
+
+            // Verificar se algum campo está vazio
+            dados.forEach(function (input) {
+                if (input.required && !input.value.trim()) {
+                    camposVazios.push(input.id);
+                }
+            });
+
+            // Se há campos vazios, exibir mensagem de erro
+            if (camposVazios.length > 0) {
+                //if (false) {
+                var mensagensErro = 'Os seguintes campos devem ser preenchidos: ' + camposVazios.join(', ');
+                document.getElementById('errorMessages').textContent = mensagensErro;
+                return; // Não continuar se houver erros
+            }
+
+            // Se todos os campos estão preenchidos, mostrar a visualização
+            document.querySelector('.forms').style.display = 'none';
+            document.querySelector('.conferenciaDados').style.display = 'block';
+
+            // Função para formatar a data no formato dd/mm/aaaa
+            function formatDate(dateString) {
+                if (dateString) {
+                    const [year, month, day] = dateString.split('-');
+                    return `${day}/${month}/${year}`;
+                }
+                return '';
+            }
+
+            // Atualizar o conteúdo da tabela de visualização com os dados do formulário
+            dados.forEach(function (input) {
+                var id = input.id;
+                var value = input.value;
+                if (input.type === 'date') {
+                    value = formatDate(value);
+                }
+                // Encontrar todos os elementos display correspondentes ao id do input
+                var displays = document.querySelectorAll(`[id$=${id}Display]`);
+                displays.forEach(function (span) {
+                    span.textContent = value;
+                });
+            });
+
+        }
+
+        function formatPhone(input) {
+            let value = input.value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+            if (value.length) {
+                value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                input.value = value;
+            } else {
+                input.value = value.substring(0, 11); // Limita a 11 dígitos
+            }
+        }
+
+        function formatPedido(input) {
+            let value = input.value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+            value = value.replace(/(\d)(\d{3})$/, '$1.$2'); // Adiciona o ponto separador
+            input.value = value;
+        }
+    </script>
+</body>
+
+</html>
