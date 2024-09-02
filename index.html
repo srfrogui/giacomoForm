@@ -518,80 +518,94 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script>
-        document.getElementById('pdf-upload').addEventListener('change', function (event) {
-            var file = event.target.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    var typedarray = new Uint8Array(e.target.result);
+            document.getElementById('pdf-upload').addEventListener('change', function (event) {
+        var file = event.target.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var typedarray = new Uint8Array(e.target.result);
 
-                    pdfjsLib.getDocument(typedarray).promise.then(function (pdf) {
-                        pdf.getPage(1).then(function (page) {
-                            page.getTextContent().then(function (textContent) {
-                                var text = textContent.items.map(item => item.str).join(' ');
-                                console.log(text); // Exibe o texto extraído do PDF no console
+                pdfjsLib.getDocument(typedarray).promise.then(function (pdf) {
+                    var numPages = pdf.numPages;
+                    var textPromises = [];
 
-                                // Função para extrair e somar valores com base em expressões regulares
-                                function extractAndSum(regex) {
-                                    var match;
-                                    var total = 0;
-                                    while ((match = regex.exec(text)) !== null) {
-                                        total += parseInt(match[1]);
-                                    }
-                                    return total;
-                                }
-
-                                // Regex e campos a serem preenchidos
-                                var regexData = [
-                                    { regex: /(\d+)\s*UN\s*(ser_cor_lam_45g|lam_topo|ser_lam_lar|ser_lam_est)/g, field: 'fitagem' },
-                                    { regex: /(\d+)\s*UN\s*furo_cnc_(20mm|10mm|3mm|15mm|1mm|5mm|8mm)/g, field: 'furosist' },
-                                    { regex: /(\d+)\s*UN\s*(usi_rebaixo_4mm|usi_rasgo_7mm)/g, field: 'canal' },
-                                    { regex: /(\d+)\s*UN\s*furo_cnc_35mm/g, field: 'furodob' },
-                                    { regex: /(\d+)\s*UN\s*ser_corte_015/g, field: 'cortes' }
-                                ];
-
-                                var ragexText = [
-                                    //sem padrao { regex: /Projje_(.+?)\s\d/, field: 'cliente' },
-                                ];
-
-                                var isAnyFieldFilled = false; // Inicializa a variável para checar se algum campo foi preenchido
-
-                                // Preenche os campos com os valores extraídos
-                                regexData.forEach(data => {
-                                    var total = extractAndSum(data.regex);
-                                    if (total > 0) { // Se o total for maior que zero, marca o campo como preenchido
-                                        document.getElementById(data.field).value = total;
-                                        isAnyFieldFilled = true; // Atualiza a variável indicando que pelo menos um campo foi preenchido
-                                        console.log(`${data.field}: ${total}`); // Exibe o valor extraído no console
-                                    } else {
-                                        document.getElementById(data.field).value = '0'; // Limpa o campo caso não tenha valor
-                                        console.log(`${data.field}: (nenhum valor encontrado)`); // Exibe a ausência de valor no console
-                                    }
+                    // Cria uma lista de promessas para extrair texto de todas as páginas
+                    for (var pageNum = 1; pageNum <= numPages; pageNum++) {
+                        textPromises.push(
+                            pdf.getPage(pageNum).then(function (page) {
+                                return page.getTextContent().then(function (textContent) {
+                                    return textContent.items.map(item => item.str).join(' ');
                                 });
+                            })
+                        );
+                    }
 
-                                // Função para extrair valores com base em expressões regulares e preencher os campos de texto
-                                function extractAndFill(regexData) {
-                                    regexData.forEach(data => {
-                                        var match = data.regex.exec(text);
-                                        if (match) {
-                                            document.getElementById(data.field).value = match[1];
-                                            isAnyFieldFilled = true; // Atualiza a variável indicando que pelo menos um campo foi preenchido
-                                            console.log(`${data.field}: ${match[1]}`); // Exibe o valor extraído no console
-                                        } else {
-                                            document.getElementById(data.field).value = ''; // Limpa o campo caso não tenha valor
-                                            console.log(`${data.field}: (nenhum valor encontrado)`); // Exibe a ausência de valor no console
-                                        }
-                                    });
-                                }
+                    // Quando todas as promessas de texto são resolvidas
+                    Promise.all(textPromises).then(function (texts) {
+                        var fullText = texts.join(' '); // Junta o texto de todas as páginas
 
-                                extractAndFill(ragexText);
-                            });
+                        console.log(fullText); // Exibe o texto extraído de todas as páginas no console
+
+                        // Função para extrair e somar valores com base em expressões regulares
+                        function extractAndSum(regex) {
+                            var match;
+                            var total = 0;
+                            while ((match = regex.exec(fullText)) !== null) {
+                                total += parseInt(match[1]);
+                            }
+                            return total;
+                        }
+
+                        // Regex e campos a serem preenchidos
+                        var regexData = [
+                            { regex: /(\d+)\s*UN\s*(ser_cor_lam_45g|lam_topo|ser_lam_lar|ser_lam_est)/g, field: 'fitagem' },
+                            { regex: /(\d+)\s*UN\s*furo_cnc_(20mm|10mm|3mm|15mm|1mm|5mm|8mm)/g, field: 'furosist' },
+                            { regex: /(\d+)\s*UN\s*(usi_rebaixo_4mm|usi_rasgo_7mm)/g, field: 'canal' },
+                            { regex: /(\d+)\s*UN\s*furo_cnc_35mm/g, field: 'furodob' },
+                            { regex: /(\d+)\s*UN\s*ser_corte_015/g, field: 'cortes' }
+                        ];
+
+                        var ragexText = [
+                            //sem padrao { regex: /Projje_(.+?)\s\d/, field: 'cliente' },
+                        ];
+
+                        var isAnyFieldFilled = false; // Inicializa a variável para checar se algum campo foi preenchido
+
+                        // Preenche os campos com os valores extraídos
+                        regexData.forEach(data => {
+                            var total = extractAndSum(data.regex);
+                            if (total > 0) { // Se o total for maior que zero, marca o campo como preenchido
+                                document.getElementById(data.field).value = total;
+                                isAnyFieldFilled = true; // Atualiza a variável indicando que pelo menos um campo foi preenchido
+                                console.log(`${data.field}: ${total}`); // Exibe o valor extraído no console
+                            } else {
+                                document.getElementById(data.field).value = '0'; // Limpa o campo caso não tenha valor
+                                console.log(`${data.field}: (nenhum valor encontrado)`); // Exibe a ausência de valor no console
+                            }
                         });
+
+                        // Função para extrair valores com base em expressões regulares e preencher os campos de texto
+                        function extractAndFill(regexData) {
+                            regexData.forEach(data => {
+                                var match = data.regex.exec(fullText);
+                                if (match) {
+                                    document.getElementById(data.field).value = match[1];
+                                    isAnyFieldFilled = true; // Atualiza a variável indicando que pelo menos um campo foi preenchido
+                                    console.log(`${data.field}: ${match[1]}`); // Exibe o valor extraído no console
+                                } else {
+                                    document.getElementById(data.field).value = ''; // Limpa o campo caso não tenha valor
+                                    console.log(`${data.field}: (nenhum valor encontrado)`); // Exibe a ausência de valor no console
+                                }
+                            });
+                        }
+
+                        extractAndFill(ragexText);
                     });
-                };
-                reader.readAsArrayBuffer(file);
-            }
-        });
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    });
 
 
 
