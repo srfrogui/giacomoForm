@@ -558,11 +558,11 @@
 
                         // Regex e campos a serem preenchidos
                         var regexData = [
-                            { regex: /(\d+)\s*UN\s*(ser_cor_lam_45g|lam_topo|ser_lam_lar|ser_lam_est)/g, field: 'fitagem' },
-                            { regex: /(\d+)\s*UN\s*furo_cnc_(20mm|10mm|3mm|15mm|1mm|5mm|8mm)/g, field: 'furosist' },
-                            { regex: /(\d+)\s*UN\s*(usi_rebaixo_4mm|usi_rasgo_7mm)/g, field: 'canal' },
-                            { regex: /(\d+)\s*UN\s*furo_cnc_35mm/g, field: 'furodob' },
-                            { regex: /(\d+)\s*UN\s*ser_corte_015/g, field: 'cortes' }
+                            { regex: /(\d+)\s*(ML|M2|UN)\s*(ser_cor_lam_45g|lam_topo|ser_lam_lar|ser_lam_est)/g, field: 'fitagem' },
+                            { regex: /(\d+)\s*(ML|M2|UN)\s*furo_cnc_(20mm|10mm|3mm|15mm|1mm|5mm|8mm)/g, field: 'furosist' },
+                            { regex: /(\d+)\s*(ML|M2|UN)\s*(usi_rebaixo_4mm|usi_rasgo_7mm)/g, field: 'canal' },
+                            { regex: /(\d+)\s*(ML|M2|UN)\s*furo_cnc_35mm/g, field: 'furodob' },
+                            { regex: /(\d+)\s*(ML|M2|UN)\s*UN\s*ser_corte_015/g, field: 'cortes' }
                         ];
 
                         var ragexText = [
