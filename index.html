@@ -236,7 +236,7 @@
                     </tr>
                     <tr>
                         <td> Esp. Engrosso: </span></td>
-                        <td><input id="espengrosso" name="espengrosso" type="number" required="" value=""></td>
+                        <td><input id="espengrosso" name="espengrosso" type="text" required="" value=""></td>
                     </tr>
                     <tr>
                         <td> Furo Dob: </span></td>
@@ -672,20 +672,57 @@
         }
 
         function formatPhone(input) {
-            let value = input.value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+            let value = input.value.replace(/[^0-9*]/g, ''); // Remove todos os caracteres não numéricos e não * 
+        
             if (value.length) {
+                // Adiciona parênteses e espaços no formato, preservando o *
                 value = value.replace(/(\d{2})(\d)/, '($1) $2');
                 value = value.replace(/(\d{5})(\d)/, '$1-$2');
+        
+                // Mantém o * no lugar correto se ele estiver presente
+                let asterisks = input.value.match(/\*/g) || [];
+                asterisks.forEach((asterisk) => {
+                    value = value.replace(/\d/, '*');
+                });
+        
                 input.value = value;
             } else {
-                input.value = value.substring(0, 11); // Limita a 11 dígitos
+                input.value = value.substring(0, 11); // Limita a 11 dígitos (ou asteriscos)
             }
         }
 
         function formatPedido(input) {
-            let value = input.value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
-            value = value.replace(/(\d)(\d{3})$/, '$1.$2'); // Adiciona o ponto separador
-            input.value = value;
+            // Captura o valor do input
+            let rawValue = input.value;
+        
+            // Função para formatar números
+            function formatNumber(number) {
+                // Extrai apenas os números da string
+                let numbers = number.replace(/\D/g, '');
+                
+                // Inicializa uma variável para armazenar o valor formatado
+                let formattedValue = '';
+        
+                // Adiciona barras e pontos conforme necessário
+                for (let i = 0; i < numbers.length; i++) {
+                    if (i > 0 && i % 6 === 0) {
+                        formattedValue += '/';
+                    } else if (i > 0 && i % 3 === 0) {
+                        formattedValue += '.';
+                    }
+                    formattedValue += numbers[i];
+                }
+                
+                return formattedValue;
+            }
+            
+            // Expressão regular para encontrar números e mantê-los no formato
+            let formattedRawValue = rawValue.replace(/(\d+(?:\.\d+)?(?:\/\d+)?)/g, match => {
+                return formatNumber(match);
+            });
+            
+            // Atualiza o valor do input com a formatação aplicada
+            input.value = formattedRawValue;
         }
     </script>
 </body>
