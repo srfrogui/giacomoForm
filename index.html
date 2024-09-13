@@ -690,20 +690,20 @@
                 input.value = value.substring(0, 11); // Limita a 11 dígitos (ou asteriscos)
             }
         }
-
+        
         function formatPedido(input) {
             // Captura o valor do input
             let rawValue = input.value;
         
-            // Função para formatar números
+            // Função para formatar números com pontos e barras
             function formatNumber(number) {
                 // Extrai apenas os números da string
                 let numbers = number.replace(/\D/g, '');
-                
+        
                 // Inicializa uma variável para armazenar o valor formatado
                 let formattedValue = '';
         
-                // Adiciona barras e pontos conforme necessário
+                // Adiciona pontos e barras conforme necessário
                 for (let i = 0; i < numbers.length; i++) {
                     if (i > 0 && i % 6 === 0) {
                         formattedValue += '/';
@@ -712,17 +712,40 @@
                     }
                     formattedValue += numbers[i];
                 }
-                
+        
                 return formattedValue;
             }
-            
-            // Expressão regular para encontrar números e mantê-los no formato
-            let formattedRawValue = rawValue.replace(/(\d+(?:\.\d+)?(?:\/\d+)?)/g, match => {
-                return formatNumber(match);
-            });
-            
+        
+            // Função para aplicar a formatação e adicionar barras automaticamente
+            function applyFormatting(value) {
+                // Divide o texto em partes usando espaços como delimitadores
+                let parts = value.split(' ');
+        
+                // Processa cada parte
+                let formattedParts = parts.map(part => {
+                    // Verifica se a parte é um número no formato que precisa ser formatado
+                    if (/\d/.test(part)) {
+                        return formatNumber(part);
+                    }
+                    return part;
+                });
+        
+                // Junta as partes novamente com espaço
+                return formattedParts.join(' ');
+            }
+        
+            // Adiciona barras após cada grupo de números formatado
+            let formattedValue = applyFormatting(rawValue);
+            formattedValue = formattedValue
+                // Adiciona barra após cada grupo de números formatados seguidos por um espaço ou outro número
+                .replace(/(\d{3}\.\d{3})(?=\s|\d|$)/g, '$1/')
+                // Remove barras duplicadas (por exemplo, se houver duas barras consecutivas)
+                .replace(/\/{2,}/g, '/')
+                // Remove barra no final se necessário
+                .replace(/\/$/, '');
+        
             // Atualiza o valor do input com a formatação aplicada
-            input.value = formattedRawValue;
+            input.value = formattedValue;
         }
     </script>
 </body>
