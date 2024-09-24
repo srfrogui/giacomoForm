@@ -23,7 +23,7 @@
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             min-width: 400px;
-            max-width: 1400px;
+            max-width: 1300px;
         }
 
         th {
@@ -38,6 +38,7 @@
             padding: 10px;
             border: 1px solid #ddd;
             text-align: left;
+            width: 50%;
         }
 
         input[type="text"],
@@ -213,6 +214,10 @@
                     <tr>
                         <td>N. Pedido: </span></td>
                         <td><input id="pedido" name="pedido" type="text" oninput="formatPedido(this)" required></td>
+                    </tr>
+                    <tr>
+                        <td>N°MoveoOP: </span></td>
+                        <td><input id="opField" name="opField" type="text"></td>
                     </tr>
                     <tr>
                         <td>Data Entrada: </span></td>
@@ -407,8 +412,10 @@
                                     id="pedidoDisplay"></span></b></td>
                     </tr>
                     <tr>
-                        <td colspan="2">Cliente Final/Telefone: <b><span id="clienteFinalDisplay"></span> <span
-                                    id="telClienteDisplay"></span></b></td>
+                        <td colspan="2">Cliente Final/Telefone: <b><span id="clienteFinalDisplay"></span>
+                        <span id="telClienteDisplay"></span></b>
+                        <span style="float: right;" id="opFieldDisplay"></span>
+                        </td>
                     </tr>
                     <tr>
                         <td>QTDD PLANOS: <b><span id="qtdplanoDisplay"></span></b></td>
@@ -661,6 +668,12 @@
                 var value = input.value;
                 if (input.type === 'date') {
                     value = formatDate(value);
+                }
+                // Condição para formatar o dado se o id for 'opField' e o valor não for nulo ou vazio
+                if (id === 'opField' && value) {
+                    value = `OP: ${value}`;
+                } else if (id === 'opField') {
+                    value = ''; // Se for nulo, manter vazio
                 }
                 // Encontrar todos os elementos display correspondentes ao id do input
                 var displays = document.querySelectorAll(`[id$=${id}Display]`);
