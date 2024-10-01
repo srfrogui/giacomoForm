@@ -127,7 +127,7 @@
 
         .buttons-container {
             display: flex;
-            justify-content: center;
+            justify-content: space-evenly;
             margin-top: 20px;
         }
 
@@ -399,7 +399,7 @@
             <table id="tabelaVisualizacao" class="fixed-size-table" border="2">
                 <thead>
                     <tr>
-                        <th colspan="2" class="tittle">
+                        <th colspan="2" class="tittle" >
                             <center>FICHA DE ACOMPANHAMENTO DE PROCESSO</center>
                         </th>
                     </tr>
@@ -465,9 +465,8 @@
                         <td>PREVISÃO PARA ENTREGA: <b><span id="previsaoEntregaDisplay"></span></b></td>
                     </tr>
                     <tr>
-                        <td colspan="2">ENDEREÇO: <b>
-                                <p id="enderecoDisplay" style="margin: 6px 0 0 0;"></p>
-                            </b></td>
+                        <td colspan="2">ENDEREÇO: <b><span id="enderecoDisplay" style="margin: 6px 0 0 0;"></span></b>
+                        </td>
                     </tr>
                     <tr>
                         <td>PRÉDIO/SOBRADO: <b><span id="predioDisplay"></span></b></td>
@@ -519,7 +518,12 @@
         </div>
         <div class="buttons-container">
             <button id="botaoVoltar" class="no-print" onclick="voltar()"><------ CORRIGIR</button>
-                    <button class="no-print" onclick="imprimir()">Imprimir</button>
+            <div class="importPDF no-print">
+                <label>
+                    <input  class="no-print" type="checkbox" id="changePrintMargins"> 🙂‍↕️ModoCalvo🙂‍↕️
+                </label>
+            </div>
+            <button class="no-print" onclick="imprimir()">Imprimir</button>
         </div>
 
     </div>
@@ -642,7 +646,7 @@
             });
 
             // Se há campos vazios, exibir mensagem de erro
-            if (camposVazios.length > 0) {
+            if (camposVazios.length > 99) {
                 //if (false) {
                 var mensagensErro = 'Os seguintes campos devem ser preenchidos: ' + camposVazios.join(', ');
                 document.getElementById('errorMessages').textContent = mensagensErro;
@@ -760,6 +764,33 @@
             // Atualiza o valor do input com a formatação aplicada
             input.value = formattedValue;
         }
+
+        document.getElementById('changePrintMargins').addEventListener('change', function() {
+            const style = document.createElement('style');
+            style.type = 'text/css';
+    
+            if (this.checked) {
+                style.innerHTML = `
+                    @media print {
+                        @page {
+                            margin-bottom: 1px;
+                            margin-top: 60px; 
+                        }
+                    }
+                `;
+            } else {
+                style.innerHTML = `
+                    @media print {
+                        @page {
+                            margin-bottom: 1px;
+                            margin-top: 15px; 
+                        }
+                    }
+                `;
+            }
+    
+            document.head.appendChild(style);
+        });
     </script>
 </body>
 
