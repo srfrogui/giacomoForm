@@ -646,7 +646,7 @@
             });
 
             // Se há campos vazios, exibir mensagem de erro
-            if (camposVazios.length > 99) {
+            if (camposVazios.length > 0) {
                 //if (false) {
                 var mensagensErro = 'Os seguintes campos devem ser preenchidos: ' + camposVazios.join(', ');
                 document.getElementById('errorMessages').textContent = mensagensErro;
