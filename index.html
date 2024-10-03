@@ -145,6 +145,9 @@
             text-align: center;
             z-index: 1000;
         }
+        .calvo {
+            display:none;
+        }
 
         @media print {
             @page {
@@ -395,6 +398,9 @@
         </div>
     </div>
     <div class="conferenciaDados" style="display: none;">
+        <div style="display: flex;justify-content: space-evenly;gap: 70px;transform: translateY(-10px);">
+	        <span class="calvo">🙂‍↕️</span><span class="calvo">🙂‍↕️</span>
+    	</div>
         <div class="certralizaPelamor">
             <table id="tabelaVisualizacao" class="fixed-size-table" border="2">
                 <thead>
@@ -771,6 +777,9 @@
     
             if (this.checked) {
                 style.innerHTML = `
+                	.calvo {
+		    	        display:block;
+		            }
                     @media print {
                         @page {
                             margin-bottom: 1px;
@@ -780,6 +789,9 @@
                 `;
             } else {
                 style.innerHTML = `
+                    .calvo {
+		    	        display:none;
+		            }
                     @media print {
                         @page {
                             margin-bottom: 1px;
