@@ -145,8 +145,9 @@
             text-align: center;
             z-index: 1000;
         }
+
         .calvo {
-            display:none;
+            display: none;
         }
 
         @media print {
@@ -181,13 +182,76 @@
                 font-size: 15px;
                 color: rgb(63, 63, 63);
             }
+
+            .snowflake,
+            #snow-container,
+            .gif-container img,
+            .gif-container {
+                display: none;
+            }
+        }
+
+
+
+        #snow-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            /* Garante que a neve não interfira com outros elementos */
+        }
+
+        .snowflake {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.8;
+            animation: fall 5s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                /* Inicia acima da tela e sem rotação */
+            }
+
+            100% {
+                transform: translateY(calc(100vh + 900px)) rotate(360deg);
+                /* Cai até fora da tela e completa uma rotação */
+            }
+        }
+
+        @keyframes leite {
+            0% {
+                transform: translateY(-100px);
+            }
+
+            100% {
+                transform: translateY(calc(100vh + 900px));
+            }
+        }
+
+
+
+        .gif-container {
+            position: absolute;
+            font-size: 24px;
+            padding: 0 0 0 3000px;
+        }
+
+        .gif-container img {
+            width: 200px;
+            height: auto;
         }
     </style>
 </head>
 
 <body>
+    <div id="snow-container"></div>
     <div class="forms">
-	<span style="position: fixed;opacity: 0.2;">v7</span>
+        <span style="position: fixed;opacity: 0.2;">v10</span>
         <div class="divTable">
             <table border="2" id="tabelaFormulario" class="tabelaFormulario">
                 <thead>
@@ -220,7 +284,7 @@
                         <td><input id="pedido" name="pedido" type="text" oninput="formatPedido(this)" required></td>
                     </tr>
                     <tr>
-                        <td>N°Projje/Cortecloud: </span></td>
+                        <td>N°Promob/Cortecloud: </span></td>
                         <td><input id="opField" name="opField" type="text"></td>
                     </tr>
                     <tr>
@@ -236,7 +300,7 @@
                         <td><input id="cortes" name="cortes" type="number" required="" value="0"></td>
                     </tr>
                     <tr>
-                        <td> Engrosso: </span></td>
+                        <td> Engrosso/Duplado: </span></td>
                         <td><input id="engrosso" name="engrosso" type="number" required=""></td>
                     </tr>
                     <tr>
@@ -262,6 +326,10 @@
                     <tr>
                         <td> Router: </span></td>
                         <td><input id="router" name="router" type="number" required=""></td>
+                    </tr>
+                    <tr>
+                        <td> Tira Ripado: </span></td>
+                        <td><input id="ripado" name="ripado" type="number" required=""></td>
                     </tr>
                     <tr>
                         <td> Canal: </span><br>
@@ -391,7 +459,7 @@
         <div class="importPDF">
             <div>
                 <h2>Importar Dados de PDF</h2>
-                <input type="file" id="pdf-upload" accept="application/pdf"><br><br>
+                <input type="file" id="pdf-upload" accept="application/pdf, application/json"><br><br>
             </div>
             <div>
                 <button type="button" onclick="mostrarVisualizacao()">Visualizar Dados</button>
@@ -400,13 +468,13 @@
     </div>
     <div class="conferenciaDados" style="display: none;">
         <div style="display: flex;justify-content: space-evenly;gap: 70px;transform: translateY(-10px);">
-	        <span class="calvo">🙂‍↕️</span><span class="calvo">🙂‍↕️</span>
-    	</div>
+            <span class="calvo">🙂‍↕️</span><span class="calvo">🙂‍↕️</span>
+        </div>
         <div class="certralizaPelamor">
             <table id="tabelaVisualizacao" class="fixed-size-table" border="2">
                 <thead>
                     <tr>
-                        <th colspan="2" class="tittle" >
+                        <th colspan="2" class="tittle">
                             <center>FICHA DE ACOMPANHAMENTO DE PROCESSO</center>
                         </th>
                     </tr>
@@ -420,8 +488,8 @@
                     </tr>
                     <tr>
                         <td colspan="2">Cliente Final/Telefone: <b><span id="clienteFinalDisplay"></span>
-                        <span id="telClienteDisplay"></span></b>
-                        <span style="float: right;" id="opFieldDisplay"></span>
+                                <span id="telClienteDisplay"></span></b>
+                            <span style="float: right;" id="opFieldDisplay"></span>
                         </td>
                     </tr>
                     <tr>
@@ -430,7 +498,7 @@
                     </tr>
                     <tr>
                         <td>CORTES (qtd): <b><span id="cortesDisplay"></span></b></td>
-                        <td>ENGROSSO (Peças): <b><span id="engrossoDisplay"></span></b></td>
+                        <td>ENGROSSO/DUPLADO (Peças): <b><span id="engrossoDisplay"></span></b></td>
                     </tr>
                     <tr>
                         <td>FITAGEM (Metros): <b><span id="fitagemDisplay"></span></b></td>
@@ -454,10 +522,11 @@
                     </tr>
                     <tr>
                         <td>CORTE PERF. (Qtdd): <b><span id="cortePerfilDisplay"></span></b></td>
-                        <td>Previsão para retirada em: <b><span id="previsaoDisplay"></span></b></td>
+                        <td>TIRA RIPADO: <b><span id="ripadoDisplay"></span></b></td>
                     </tr>
                     <tr>
-                        <td colspan="2">MATERIAL DA CENTRAL: <b><span id="materialCentralDisplay"></span></b></td>
+                        <td>MATERIAL DA CENTRAL: <b><span id="materialCentralDisplay"></span></b></td>
+                        <td>Previsão para retirada em: <b><span id="previsaoDisplay"></span></b></td>
                     </tr>
                     <tr>
                         <td colspan="2">USO DE SOBRAS: <b><span id="usoSobraDisplay"></span></b></td>
@@ -525,107 +594,132 @@
         </div>
         <div class="buttons-container">
             <button id="botaoVoltar" class="no-print" onclick="voltar()"><------ CORRIGIR</button>
-            <div class="importPDF no-print">
-                <label>
-                    <input  class="no-print" type="checkbox" id="changePrintMargins"> 🙂‍↕️ModoCalvo🙂‍↕️
-                </label>
-            </div>
-            <button class="no-print" onclick="imprimir()">Imprimir</button>
+                    <div class="importPDF no-print">
+                        <label>
+                            <input class="no-print" type="checkbox" id="changePrintMargins"> 🙂‍↕️ModoCalvo🙂‍↕️
+                        </label>
+                    </div>
+                    <button class="no-print" onclick="imprimir()">Imprimir</button>
         </div>
 
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script>
-            document.getElementById('pdf-upload').addEventListener('change', function (event) {
-        var file = event.target.files[0];
-        if (file) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                var typedarray = new Uint8Array(e.target.result);
-
-                pdfjsLib.getDocument(typedarray).promise.then(function (pdf) {
-                    var numPages = pdf.numPages;
-                    var textPromises = [];
-
-                    // Cria uma lista de promessas para extrair texto de todas as páginas
-                    for (var pageNum = 1; pageNum <= numPages; pageNum++) {
-                        textPromises.push(
-                            pdf.getPage(pageNum).then(function (page) {
-                                return page.getTextContent().then(function (textContent) {
-                                    return textContent.items.map(item => item.str).join(' ');
-                                });
-                            })
-                        );
-                    }
-
-                    // Quando todas as promessas de texto são resolvidas
-                    Promise.all(textPromises).then(function (texts) {
-                        var fullText = texts.join(' '); // Junta o texto de todas as páginas
-
-                        console.log(fullText); // Exibe o texto extraído de todas as páginas no console
-
-                        // Função para extrair e somar valores com base em expressões regulares
-                        function extractAndSum(regex) {
-                            var match;
-                            var total = 0;
-                            while ((match = regex.exec(fullText)) !== null) {
-                                total += parseInt(match[1]);
+		// seta a data de entrada como a de hj
+		document.getElementById('dataentrada').value = new Date().toISOString().split('T')[0];
+		document.querySelectorAll('input[type="number"]').forEach(function(input) {
+		  input.value = '';
+		});
+		
+        document.getElementById('pdf-upload').addEventListener('change', function (event) {
+            var file = event.target.files[0];
+            
+            if (file) {
+                var reader = new FileReader();
+                
+                // Verifica se o arquivo é um JSON
+                if (file.name.endsWith('.json')) {
+                    reader.onload = function (e) {
+                        var jsonData = JSON.parse(e.target.result);
+                        
+                        // Preenche os campos com base no conteúdo do JSON
+                        for (var key in jsonData) {
+                            var field = document.getElementById(key);
+                            if (field) {
+                                field.value = jsonData[key];
+                                console.log(`${key}: ${jsonData[key]}`); // Exibe o valor no console
                             }
-                            return total;
                         }
-
-                        // Regex e campos a serem preenchidos
-                        var regexData = [
-                            { regex: /(\d+)\s*(ML|M2|UN)\s*(ser_cor_lam_45g|lam_topo|ser_lam_lar|ser_lam_est)/g, field: 'fitagem' },
-                            { regex: /(\d+)\s*(ML|M2|UN)\s*furo_cnc_(20mm|10mm|3mm|15mm|1mm|5mm|8mm)/g, field: 'furosist' },
-                            { regex: /(\d+)\s*(ML|M2|UN)\s*(usi_rebaixo_4mm|usi_rasgo_7mm)/g, field: 'canal' },
-                            { regex: /(\d+)\s*(ML|M2|UN)\s*furo_cnc_35mm/g, field: 'furodob' },
-                            { regex: /(\d+)\s*(ML|M2|UN)\s*ser_corte_015/g, field: 'cortes' },
-                            { regex: /(\d+)\s*(ML|M2|UN)\s*servico_instal_perfil_015/g, field: 'cortePerfil' }
-                        ];
-
-                        var ragexText = [
-                            //sem padrao { regex: /Projje_(.+?)\s\d/, field: 'cliente' },
-                        ];
-
-                        var isAnyFieldFilled = false; // Inicializa a variável para checar se algum campo foi preenchido
-
-                        // Preenche os campos com os valores extraídos
-                        regexData.forEach(data => {
-                            var total = extractAndSum(data.regex);
-                            if (total > 0) { // Se o total for maior que zero, marca o campo como preenchido
-                                document.getElementById(data.field).value = total;
-                                isAnyFieldFilled = true; // Atualiza a variável indicando que pelo menos um campo foi preenchido
-                                console.log(`${data.field}: ${total}`); // Exibe o valor extraído no console
-                            } else {
-                                document.getElementById(data.field).value = '0'; // Limpa o campo caso não tenha valor
-                                console.log(`${data.field}: (nenhum valor encontrado)`); // Exibe a ausência de valor no console
+                    };
+                    reader.readAsText(file); // Lê o arquivo como texto para JSON
+                } else {
+                    reader.onload = function (e) {
+                        var typedarray = new Uint8Array(e.target.result);
+        
+                        pdfjsLib.getDocument(typedarray).promise.then(function (pdf) {
+                            var numPages = pdf.numPages;
+                            var textPromises = [];
+        
+                            // Cria uma lista de promessas para extrair texto de todas as páginas
+                            for (var pageNum = 1; pageNum <= numPages; pageNum++) {
+                                textPromises.push(
+                                    pdf.getPage(pageNum).then(function (page) {
+                                        return page.getTextContent().then(function (textContent) {
+                                            return textContent.items.map(item => item.str).join(' ');
+                                        });
+                                    })
+                                );
                             }
-                        });
-
-                        // Função para extrair valores com base em expressões regulares e preencher os campos de texto
-                        function extractAndFill(regexData) {
-                            regexData.forEach(data => {
-                                var match = data.regex.exec(fullText);
-                                if (match) {
-                                    document.getElementById(data.field).value = match[1];
-                                    isAnyFieldFilled = true; // Atualiza a variável indicando que pelo menos um campo foi preenchido
-                                    console.log(`${data.field}: ${match[1]}`); // Exibe o valor extraído no console
-                                } else {
-                                    document.getElementById(data.field).value = ''; // Limpa o campo caso não tenha valor
-                                    console.log(`${data.field}: (nenhum valor encontrado)`); // Exibe a ausência de valor no console
+        
+                            // Quando todas as promessas de texto são resolvidas
+                            Promise.all(textPromises).then(function (texts) {
+                                var fullText = texts.join(' '); // Junta o texto de todas as páginas
+        
+                                console.log(fullText); // Exibe o texto extraído de todas as páginas no console
+        
+                                // Função para extrair e somar valores com base em expressões regulares
+                                function extractAndSum(regex) {
+                                    var match;
+                                    var total = 0;
+                                    while ((match = regex.exec(fullText)) !== null) {
+                                        total += parseInt(match[1]);
+                                    }
+                                    return total;
                                 }
+        
+                                // Regex e campos a serem preenchidos
+                                var regexData = [
+                                    { regex: /(\d+)\s*(ML|M2|UN)\s*(ser_cor_lam_45g|lam_topo|ser_lam_lar|ser_lam_est)/g, field: 'fitagem' },
+                                    { regex: /(\d+)\s*(ML|M2|UN)\s*furo_cnc_(20mm|10mm|3mm|15mm|1mm|5mm|8mm)/g, field: 'furosist' },
+                                    { regex: /(\d+)\s*(ML|M2|UN)\s*(usi_rebaixo_4mm|usi_rasgo_7mm)/g, field: 'canal' },
+                                    { regex: /(\d+)\s*(ML|M2|UN)\s*furo_cnc_35mm/g, field: 'furodob' },
+                                    { regex: /(\d+)\s*(ML|M2|UN)\s*ser_corte_015/g, field: 'cortes' },
+                                    { regex: /(\d+)\s*(ML|M2|UN)\s*servico_instal_perfil_015/g, field: 'cortePerfil' }
+                                ];
+        
+                                var ragexText = [
+                                    //sem padrao { regex: /Projje_(.+?)\s\d/, field: 'cliente' },
+                                ];
+        
+                                var isAnyFieldFilled = false; // Inicializa a variável para checar se algum campo foi preenchido
+        
+                                // Preenche os campos com os valores extraídos
+                                regexData.forEach(data => {
+                                    var total = extractAndSum(data.regex);
+                                    if (total > 0) { // Se o total for maior que zero, marca o campo como preenchido
+                                        document.getElementById(data.field).value = total;
+                                        isAnyFieldFilled = true; // Atualiza a variável indicando que pelo menos um campo foi preenchido
+                                        console.log(`${data.field}: ${total}`); // Exibe o valor extraído no console
+                                    } else {
+                                        document.getElementById(data.field).value = '0'; // Limpa o campo caso não tenha valor
+                                        console.log(`${data.field}: (nenhum valor encontrado)`); // Exibe a ausência de valor no console
+                                    }
+                                });
+        
+                                // Função para extrair valores com base em expressões regulares e preencher os campos de texto
+                                function extractAndFill(regexData) {
+                                    regexData.forEach(data => {
+                                        var match = data.regex.exec(fullText);
+                                        if (match) {
+                                            document.getElementById(data.field).value = match[1];
+                                            isAnyFieldFilled = true; // Atualiza a variável indicando que pelo menos um campo foi preenchido
+                                            console.log(`${data.field}: ${match[1]}`); // Exibe o valor extraído no console
+                                        } else {
+                                            document.getElementById(data.field).value = ''; // Limpa o campo caso não tenha valor
+                                            console.log(`${data.field}: (nenhum valor encontrado)`); // Exibe a ausência de valor no console
+                                        }
+                                    });
+                                }
+        
+                                extractAndFill(ragexText);
                             });
-                        }
-
-                        extractAndFill(ragexText);
-                    });
-                });
-            };
-            reader.readAsArrayBuffer(file);
-        }
-    });
+                        });
+                    };
+                    reader.readAsArrayBuffer(file); // Lê o arquivo como ArrayBuffer para o PDF
+                }
+            }
+        });
 
 
 
@@ -653,7 +747,7 @@
             });
 
             // Se há campos vazios, exibir mensagem de erro
-            if (camposVazios.length > 0) {
+            if (camposVazios.length > 0) { // < ------------------------------------------------==========================================================================
                 //if (false) {
                 var mensagensErro = 'Os seguintes campos devem ser preenchidos: ' + camposVazios.join(', ');
                 document.getElementById('errorMessages').textContent = mensagensErro;
@@ -682,10 +776,17 @@
                 }
                 // Condição para formatar o dado se o id for 'opField' e o valor não for nulo ou vazio
                 if (id === 'opField' && value) {
-                    value = `Projje//CorteCloud: ${value}`;
+                    value = `Projje //CorteCloud: ${value}`;
                 } else if (id === 'opField') {
                     value = ''; // Se for nulo, manter vazio
                 }
+                
+                if (id === 'ripado' && value) {
+                    value = `${value} ---> Abrir em 33mm`;
+                } else if (id === 'ripado') {
+                    value = ''; // Se for nulo, manter vazio
+                }
+
                 // Encontrar todos os elementos display correspondentes ao id do input
                 var displays = document.querySelectorAll(`[id$=${id}Display]`);
                 displays.forEach(function (span) {
@@ -697,36 +798,36 @@
 
         function formatPhone(input) {
             let value = input.value.replace(/[^0-9*]/g, ''); // Remove todos os caracteres não numéricos e não * 
-        
+
             if (value.length) {
                 // Adiciona parênteses e espaços no formato, preservando o *
                 value = value.replace(/(\d{2})(\d)/, '($1) $2');
                 value = value.replace(/(\d{5})(\d)/, '$1-$2');
-        
+
                 // Mantém o * no lugar correto se ele estiver presente
                 let asterisks = input.value.match(/\*/g) || [];
                 asterisks.forEach((asterisk) => {
                     value = value.replace(/\d/, '*');
                 });
-        
+
                 input.value = value;
             } else {
                 input.value = value.substring(0, 11); // Limita a 11 dígitos (ou asteriscos)
             }
         }
-        
+
         function formatPedido(input) {
             // Captura o valor do input
             let rawValue = input.value;
-        
+
             // Função para formatar números com pontos e barras
             function formatNumber(number) {
                 // Extrai apenas os números da string
                 let numbers = number.replace(/\D/g, '');
-        
+
                 // Inicializa uma variável para armazenar o valor formatado
                 let formattedValue = '';
-        
+
                 // Adiciona pontos e barras conforme necessário
                 for (let i = 0; i < numbers.length; i++) {
                     if (i > 0 && i % 6 === 0) {
@@ -736,15 +837,15 @@
                     }
                     formattedValue += numbers[i];
                 }
-        
+
                 return formattedValue;
             }
-        
+
             // Função para aplicar a formatação e adicionar barras automaticamente
             function applyFormatting(value) {
                 // Divide o texto em partes usando espaços como delimitadores
                 let parts = value.split(' ');
-        
+
                 // Processa cada parte
                 let formattedParts = parts.map(part => {
                     // Verifica se a parte é um número no formato que precisa ser formatado
@@ -753,11 +854,11 @@
                     }
                     return part;
                 });
-        
+
                 // Junta as partes novamente com espaço
                 return formattedParts.join(' ');
             }
-        
+
             // Adiciona barras após cada grupo de números formatado
             let formattedValue = applyFormatting(rawValue);
             formattedValue = formattedValue
@@ -767,15 +868,15 @@
                 .replace(/\/{2,}/g, '/')
                 // Remove barra no final se necessário
                 .replace(/\/$/, '');
-        
+
             // Atualiza o valor do input com a formatação aplicada
             input.value = formattedValue;
         }
 
-        document.getElementById('changePrintMargins').addEventListener('change', function() {
+        document.getElementById('changePrintMargins').addEventListener('change', function () {
             const style = document.createElement('style');
             style.type = 'text/css';
-    
+
             if (this.checked) {
                 style.innerHTML = `
                 	.calvo {
@@ -801,9 +902,82 @@
                     }
                 `;
             }
-    
+
             document.head.appendChild(style);
         });
+
+
+
+        // Verifica se o mês atual é dezembro
+        var currentMonth = new Date().getMonth(); // 0 = janeiro, 11 = dezembro
+
+        if (currentMonth === 11) { // Se for dezembro, ativa a neve
+            const snowContainer = document.getElementById('snow-container');
+            const emojis = ['❄️', '🎄', '🎅', '⭐', '⛄', '❄️', '❄️', '❄️', '❄️']; // Emojis de Natal
+
+            // Função para criar flocos de neve
+            function createSnowflake() {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+
+                // Escolhe um emoji aleatório
+                const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+                snowflake.innerText = emoji;
+
+                // Posição aleatória do floco
+                snowflake.style.left = Math.random() * 100 + 'vw';  // Entre 0% e 100% da largura da tela
+                snowflake.style.animationDuration = Math.random() * 3 + 3 + 's'; // Entre 3s e 6s para cair
+                snowflake.style.animationDelay = Math.random() * 0 + 's'; // Entre 0s e 5s de atraso
+
+                // Adiciona o floco ao container
+                snowContainer.appendChild(snowflake);
+
+                // Remove o floco após ele sair da tela (para economizar memória)
+                setTimeout(() => {
+                    snowflake.remove();
+                }, 10000); // Tempo limite para remover o floco (10 segundos)
+            }
+
+            // Cria flocos de neve continuamente com uma frequência controlada
+            setInterval(createSnowflake, 500); // Gera um floco a cada 500ms
+		}
+            // Função para adicionar o GIF e fazê-lo cair
+            function criarGif() {
+                const gifContainer = document.createElement('div');
+                gifContainer.classList.add('gif-container');
+
+                // Cria o elemento de imagem com o GIF
+                const gifImage = document.createElement('img');
+                gifImage.src = 'https://i.pinimg.com/originals/03/6b/29/036b2969dcd09ae9d16515681632121a.gif'; // Substitua com a URL do seu GIF
+                gifImage.alt = 'GIF de Natal';
+                gifImage.style.position = 'absolute';
+                gifImage.style.left = '50%';
+                gifImage.style.top = '-10%'; // Começa fora da tela
+                gifImage.style.transform = 'translateX(-50%)'; // Para centralizar o GIF
+
+                // Adiciona o GIF ao container
+                gifContainer.appendChild(gifImage);
+
+                // Adiciona o contêiner de GIF ao snow-container
+                const snowContainer = document.getElementById('snow-container'); // Certifique-se de ter um elemento com esse ID no HTML
+                snowContainer.appendChild(gifContainer);
+
+                // Adiciona a animação ao GIF
+                gifContainer.style.animation = 'leite 5s linear'; // Faz o GIF cair
+
+                // Faz o GIF desaparecer após 5 segundos
+                setTimeout(() => {
+                    gifContainer.style.transition = 'opacity 1s'; // Transição suave
+                    gifContainer.style.opacity = '0'; // Torna o GIF invisível
+                    setTimeout(() => {
+                        gifContainer.remove(); // Remove o contêiner depois de 1 segundo (tempo da transição)
+                    }, 1000); // Espera a transição terminar
+                }, 4000); // 4 segundos para desaparecer
+            }
+
+            // Loop para criar o GIF a cada 30 min
+            setInterval(criarGif, 1800000);
+        
     </script>
 </body>
 
