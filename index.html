@@ -296,46 +296,45 @@
                         <td><input id="qtdplano" name="qtdplano" type="number" required=""></td>
                     </tr>
                     <tr>
-                        <td> Cortes: </span></td>
+                        <td> Cortes(UN): </span></td>
                         <td><input id="cortes" name="cortes" type="number" required="" value="0"></td>
                     </tr>
                     <tr>
-                        <td> Engrosso/Duplado: </span></td>
+                        <td> Eng/Dup/(UN): </span></td>
                         <td><input id="engrosso" name="engrosso" type="number" required=""></td>
                     </tr>
                     <tr>
-                        <td> Fitagem: </span></td>
+                        <td> Fitagem(ML): </span></td>
                         <td><input id="fitagem" name="fitagem" type="number" required="" value="0"></td>
                     </tr>
                     <tr>
-                        <td> Esp. Engrosso: </span></td>
+                        <td> Esp. Engrosso(mm): </span></td>
                         <td><input id="espengrosso" name="espengrosso" type="text" required="" value=""></td>
                     </tr>
                     <tr>
-                        <td> Furo Dob: </span></td>
+                        <td> Furo Dob(UN): </span></td>
                         <td><input id="furodob" name="furodob" type="number" required="" value="0"></td>
                     </tr>
                     <tr>
-                        <td> Usin. 45: </span></td>
+                        <td> Usin. 45(UN): </span></td>
                         <td><input id="usinagem" name="usinagem" type="number" required=""></td>
                     </tr>
                     <tr>
-                        <td> Furo sist: </span></td>
+                        <td> Furo sist(UN): </span></td>
                         <td><input id="furosist" name="furosist" type="number" required="" value="0"></td>
                     </tr>
                     <tr>
-                        <td> Router: </span></td>
+                        <td> Router(UN): </span></td>
                         <td><input id="router" name="router" type="number" required=""></td>
                     </tr>
                     <tr>
-                        <td> Tira Ripado: </span></td>
+                        <td> Tira Ripado(UN): </span></td>
                         <td><input id="ripado" name="ripado" type="number" required=""></td>
                     </tr>
                     <tr>
-                        <td> Canal: </span><br>
+                        <td> Canal(ML): </span><br>
                         </td>
                         <td><input id="canal" name="canal" type="number" required="" value="0"> </td>
-
                     </tr>
                     <tr>
                         <td>Tipo de canal: </span></td>
@@ -350,7 +349,7 @@
                         <td><input id="ttpecas" name="ttpecas" type="number" required=""></td>
                     </tr>
                     <tr>
-                        <td> Corte Perf: </span></td>
+                        <td> Corte Perf(UN): </span></td>
                         <td><input id="cortePerfil" name="cortePerfil" type="number" required=""></td>
                     </tr>
                     <tr>
@@ -459,7 +458,7 @@
         <div class="importPDF">
             <div>
                 <h2>Importar Dados de PDF</h2>
-                <input type="file" id="pdf-upload" accept="application/pdf, application/json"><br><br>
+                <input type="file" id="pdf-upload" accept="application/pdf, .banana"><br><br>
             </div>
             <div>
                 <button type="button" onclick="mostrarVisualizacao()">Visualizar Dados</button>
@@ -619,7 +618,7 @@
                 var reader = new FileReader();
                 
                 // Verifica se o arquivo é um JSON
-                if (file.name.endsWith('.json')) {
+                if (file.name.endsWith('.banana')) {
                     reader.onload = function (e) {
                         var jsonData = JSON.parse(e.target.result);
                         
