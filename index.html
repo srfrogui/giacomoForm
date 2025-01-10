@@ -261,11 +261,13 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>Cliente/Projeto: </span></td>
-                        <td><input id="cliente" name="cliente" type="text" required=""></td>
-                    </tr>
+		<tbody>
+		    <td>
+			    <div style="display: flex;">
+				    <input id="cliente" name="cliente" type="text" placeholder="cliente" required="">
+				    <input id="projeto" name="projeto" type="text" placeholder="projeto" required="">
+			    </div>
+		    </td>
                     <tr>
                         <td>Cliente Final: </td>
                         <td><input id="clienteFinal" name="clienteFinal" type="text">
@@ -481,9 +483,8 @@
                 <tbody>
                     <!-- Dados exibidos na conferência -->
                     <tr>
-                        <td>CLIENTE/OBRA: <b><span id="clienteDisplay"></span></b></td>
-                        <td>VENDEDOR/PEDIDO: <b><span id="vendedorDisplay"></span> - <span
-                                    id="pedidoDisplay"></span></b></td>
+                        <td>CLIENTE/PROJETO: <b><span id="clienteDisplay"></span> / <span id="projetoDisplay"></span></b></td>
+                        <td>VENDEDOR/PEDIDO: <b><span id="vendedorDisplay"></span> - <span id="pedidoDisplay"></span></b></td>
                     </tr>
                     <tr>
                         <td colspan="2">Cliente Final/Telefone: <b><span id="clienteFinalDisplay"></span>
