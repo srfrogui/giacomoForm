@@ -261,13 +261,16 @@
                         </th>
                     </tr>
                 </thead>
-		<tbody>
-		    <td>
-			    <div style="display: flex;">
-				    <input id="cliente" name="cliente" type="text" placeholder="cliente" required="">
-				    <input id="projeto" name="projeto" type="text" placeholder="projeto" required="">
-			    </div>
-		    </td>
+                <tbody>
+                    <tr>
+                        <td>Cliente/Projeto: </span></td>
+                        <td>
+							<div style="display: flex;">
+								<input id="cliente" name="cliente" type="text" placeholder="cliente" required="">
+								<input id="projeto" name="projeto" type="text" placeholder="projeto" required="">
+							</div>
+						</td>
+                    </tr>
                     <tr>
                         <td>Cliente Final: </td>
                         <td><input id="clienteFinal" name="clienteFinal" type="text">
@@ -311,7 +314,7 @@
                     </tr>
                     <tr>
                         <td> Esp. Engrosso(mm): </span></td>
-                        <td><input id="espengrosso" name="espengrosso" type="text" required="" value=""></td>
+                        <td><input id="espengrosso" name="espengrosso" type="text" value=""></td>
                     </tr>
                     <tr>
                         <td> Furo Dob(UN): </span></td>
@@ -489,7 +492,7 @@
                     <tr>
                         <td colspan="2">Cliente Final/Telefone: <b><span id="clienteFinalDisplay"></span>
                                 <span id="telClienteDisplay"></span></b>
-                            <span style="float: right;" id="opFieldDisplay"></span>
+                            <span style="float: right;" id="opFieldDisplay" ondblclick="makeEditable(this)"></span>
                         </td>
                     </tr>
                     <tr>
@@ -522,7 +525,7 @@
                     </tr>
                     <tr>
                         <td>CORTE PERF. (Qtdd): <b><span id="cortePerfilDisplay"></span></b></td>
-                        <td>TIRA RIPADO: <b><span id="ripadoDisplay"></span></b></td>
+                        <td>TIRA RIPADO: <b><span id="ripadoDisplay"></span><span id="ripadommDisplay" ondblclick="makeEditable(this)"></span></b></td>
                     </tr>
                     <tr>
                         <td>MATERIAL DA CENTRAL: <b><span id="materialCentralDisplay"></span></b></td>
@@ -606,12 +609,28 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script>
+		const elements = document.querySelectorAll('[id*="Display"]');
+		// Adiciona o evento de duplo clique a cada um desses elementos
+		// elements.forEach(element => {
+		//	element.ondblclick = function() {
+		//	  element.contentEditable = true;
+		//	  element.focus();
+		//	};
+		//});
+	  
+		//funcao p editar span que tenha ondblclick="makeEditable(this)"
+		  function makeEditable(span) {
+			span.contentEditable = true;
+			span.focus();
+		  }
+		
+		
 		// seta a data de entrada como a de hj
 		document.getElementById('dataentrada').value = new Date().toISOString().split('T')[0];
 		document.querySelectorAll('input[type="number"]').forEach(function(input) {
 		  input.value = '';
 		});
-		
+		let ripadommValue = null;
         document.getElementById('pdf-upload').addEventListener('change', function (event) {
             var file = event.target.files[0];
             
@@ -629,7 +648,10 @@
                             if (field) {
                                 field.value = jsonData[key];
                                 console.log(`${key}: ${jsonData[key]}`); // Exibe o valor no console
-                            }
+                            } else if (key === 'abrirem' && jsonData[key]) {
+							    console.log(`${key}: ${jsonData[key]}`);
+								ripadommValue = jsonData[key];
+							}
                         }
                     };
                     reader.readAsText(file); // Lê o arquivo como texto para JSON
@@ -730,6 +752,7 @@
 
         function imprimir() {
             window.print();
+			ripadommValue = null;
         }
 
         function mostrarVisualizacao() {
@@ -747,7 +770,7 @@
             });
 
             // Se há campos vazios, exibir mensagem de erro
-            if (camposVazios.length > 0) { // < ------------------------------------------------==========================================================================
+            if (camposVazios.length > 90) { // < ------------------------------------------------==========================================================================
                 //if (false) {
                 var mensagensErro = 'Os seguintes campos devem ser preenchidos: ' + camposVazios.join(', ');
                 document.getElementById('errorMessages').textContent = mensagensErro;
@@ -781,12 +804,28 @@
                     value = ''; // Se for nulo, manter vazio
                 }
                 
-                if (id === 'ripado' && value) {
-                    value = `${value} ---> Abrir em 33mm`;
-                } else if (id === 'ripado') {
-                    value = ''; // Se for nulo, manter vazio
-                }
-
+				var ripadommDisplay = document.getElementById('ripadommDisplay');
+				// Lógica específica para verificar ripadomm e ripado
+				if (!ripadommValue && id === 'ripado' && value) {
+					// Caso o valor de ripadomm não exista e ripado exista
+					value = `${value}`;
+					if (ripadommDisplay) {
+						ripadommDisplay.textContent = ` ---> Conferir Medida MM`;  // Atualiza o conteúdo do span
+					}
+				} else if (ripadommValue && id === 'ripado' && value) {
+					// Caso ambos ripadomm e ripado existam
+					value = `${value}`;
+					if (ripadommDisplay) {
+						ripadommDisplay.textContent = ` ---> Abrir em ${ripadommValue}mm`;  // Atualiza o conteúdo do span
+					}
+				} else if (id === 'ripado' && !value) {
+					// Caso ripado não tenha valor
+					value = '';
+					if (ripadommDisplay) {
+						ripadommDisplay.textContent = '';  // Limpa o conteúdo do span
+					}
+				}
+				
                 // Encontrar todos os elementos display correspondentes ao id do input
                 var displays = document.querySelectorAll(`[id$=${id}Display]`);
                 displays.forEach(function (span) {
