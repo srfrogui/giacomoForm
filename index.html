@@ -609,7 +609,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script>
-		const elements = document.querySelectorAll('[id*="Display"]');
+		//const elements = document.querySelectorAll('[id*="Display"]');
 		// Adiciona o evento de duplo clique a cada um desses elementos
 		// elements.forEach(element => {
 		//	element.ondblclick = function() {
@@ -816,7 +816,7 @@
 					// Caso ambos ripadomm e ripado existam
 					value = `${value}`;
 					if (ripadommDisplay) {
-						ripadommDisplay.textContent = ` ---> Abrir em ${ripadommValue}mm`;  // Atualiza o conteúdo do span
+						ripadommDisplay.textContent = ` ---> Abrir em ${ripadommValue}`;  // Atualiza o conteúdo do span
 					}
 				} else if (id === 'ripado' && !value) {
 					// Caso ripado não tenha valor
