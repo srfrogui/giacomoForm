@@ -251,7 +251,7 @@
 <body>
     <div id="snow-container"></div>
     <div class="forms">
-        <span style="position: fixed;opacity: 0.2;">v10</span>
+        <span style="position: fixed;opacity: 0.2;">v10a</span>
         <div class="divTable">
             <table border="2" id="tabelaFormulario" class="tabelaFormulario">
                 <thead>
@@ -770,7 +770,7 @@
             });
 
             // Se há campos vazios, exibir mensagem de erro
-            if (camposVazios.length > 90) { // < ------------------------------------------------==========================================================================
+            if (camposVazios.length > 0) { // < ------------------------------------------------==========================================================================
                 //if (false) {
                 var mensagensErro = 'Os seguintes campos devem ser preenchidos: ' + camposVazios.join(', ');
                 document.getElementById('errorMessages').textContent = mensagensErro;
@@ -806,13 +806,13 @@
                 
 				var ripadommDisplay = document.getElementById('ripadommDisplay');
 				// Lógica específica para verificar ripadomm e ripado
-				if (!ripadommValue && id === 'ripado' && value) {
+				if (!ripadommValue && id === 'ripado' && value > 0) {
 					// Caso o valor de ripadomm não exista e ripado exista
 					value = `${value}`;
 					if (ripadommDisplay) {
 						ripadommDisplay.textContent = ` ---> Conferir Medida MM`;  // Atualiza o conteúdo do span
 					}
-				} else if (ripadommValue && id === 'ripado' && value) {
+				} else if (ripadommValue && id === 'ripado' && value > 0) {
 					// Caso ambos ripadomm e ripado existam
 					value = `${value}`;
 					if (ripadommDisplay) {
