@@ -39,6 +39,7 @@
             border: 1px solid #ddd;
             text-align: left;
             width: 50%;
+			max-width: 1000px;
         }
 
         input[type="text"],
@@ -190,7 +191,63 @@
                 display: none;
             }
         }
+		
+		@media (prefers-color-scheme: dark) {
+			body {
+				background-color: #262626;
+				color: #e0e0e0;
+			}
+			
+			h2{
+			    color: #fff;
+			}
 
+			table {
+				background-color: #353535;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+			}
+
+			th {
+				background-color: #1e88e5;
+			}
+
+			td {
+				border: 1px solid #444;
+			}
+
+			input[type="text"],
+			input[type="number"],
+			input[type="date"],
+			select {
+				background-color: #333;
+				color: #e0e0e0;
+				border: 1px solid #555;
+			}
+
+			input[type="file"] {
+				background-color: #1e88e5;
+			}
+
+			input[type="file"]:hover {
+				background-color: #1565c0;
+			}
+
+			button {
+				background-color: #1e88e5;
+			}
+
+			button:hover {
+				background-color: #1565c0;
+			}
+
+			#botaoVoltar {
+				background-color: #d32f2f;
+			}
+
+			#botaoVoltar:hover {
+				background-color: #b71c1c;
+			}
+		}
 
 
         #snow-container {
@@ -233,8 +290,6 @@
             }
         }
 
-
-
         .gif-container {
             position: absolute;
             font-size: 24px;
@@ -251,7 +306,7 @@
 <body>
     <div id="snow-container"></div>
     <div class="forms">
-        <span style="position: fixed;opacity: 0.2;">v10a</span>
+        <span style="position: fixed;opacity: 0.2;">v11</span>
         <div class="divTable">
             <table border="2" id="tabelaFormulario" class="tabelaFormulario">
                 <thead>
@@ -396,7 +451,7 @@
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <center> <b>FICHA DE ACEITE</b></center>
+                            <center> <b>FICHA DE ENTREGA</b></center>
                         </td>
                     </tr>
                     <tr>
@@ -466,7 +521,7 @@
                 <input type="file" id="pdf-upload" accept="application/pdf, .banana"><br><br>
             </div>
             <div>
-                <button type="button" onclick="mostrarVisualizacao()">Visualizar Dados</button>
+                <button type="button" id="seuBotao">Visualizar Dados</button>
             </div>
         </div>
     </div>
@@ -755,41 +810,48 @@
 			ripadommValue = null;
         }
 
-        function mostrarVisualizacao() {
-            // Limpar mensagens de erro
-            document.getElementById('errorMessages').textContent = '';
 
-            var camposVazios = [];
-            var dados = document.querySelectorAll('.forms input, .forms select');
+		document.getElementById('seuBotao').addEventListener('click', mostrarVisualizacao);
+		function mostrarVisualizacao(event) {
+			// Verifica se a tecla Shift está pressionada durante o clique
+			if (event.shiftKey) {
+				// Se Shift estiver pressionado, bypass nos erros
+				console.log("Shift pressionado, bypass nos erros.");
+			} else {
+				// Limpar mensagens de erro
+				document.getElementById('errorMessages').textContent = '';
 
-            // Verificar se algum campo está vazio
-            dados.forEach(function (input) {
-                if (input.required && !input.value.trim()) {
-                    camposVazios.push(input.id);
-                }
-            });
+				var camposVazios = [];
+				var dados = document.querySelectorAll('.forms input, .forms select');
 
-            // Se há campos vazios, exibir mensagem de erro
-            if (camposVazios.length > 0) { // < ------------------------------------------------==========================================================================
-                //if (false) {
-                var mensagensErro = 'Os seguintes campos devem ser preenchidos: ' + camposVazios.join(', ');
-                document.getElementById('errorMessages').textContent = mensagensErro;
-                return; // Não continuar se houver erros
-            }
+				// Verificar se algum campo está vazio
+				dados.forEach(function (input) {
+					if (input.required && !input.value.trim()) {
+						camposVazios.push(input.id);
+					}
+				});
 
-            // Se todos os campos estão preenchidos, mostrar a visualização
-            document.querySelector('.forms').style.display = 'none';
-            document.querySelector('.conferenciaDados').style.display = 'block';
+				// Se há campos vazios, exibir mensagem de erro
+				if (camposVazios.length > 0) {
+					var mensagensErro = 'Os seguintes campos devem ser preenchidos: ' + camposVazios.join(', ');
+					document.getElementById('errorMessages').textContent = mensagensErro;
+					return; // Não continuar se houver erros
+				}
+			}
 
-            // Função para formatar a data no formato dd/mm/aaaa
-            function formatDate(dateString) {
-                if (dateString) {
-                    const [year, month, day] = dateString.split('-');
-                    return `${day}/${month}/${year}`;
-                }
-                return '';
-            }
+			// Se todos os campos estão preenchidos ou se Shift foi pressionado (bypass), mostrar a visualização
+			document.querySelector('.forms').style.display = 'none';
+			document.querySelector('.conferenciaDados').style.display = 'block';
 
+			// Função para formatar a data no formato dd/mm/aaaa
+			function formatDate(dateString) {
+				if (dateString) {
+					const [year, month, day] = dateString.split('-');
+					return `${day}/${month}/${year}`;
+				}
+				return '';
+			}
+		
             // Atualizar o conteúdo da tabela de visualização com os dados do formulário
             dados.forEach(function (input) {
                 var id = input.id;
@@ -806,13 +868,13 @@
                 
 				var ripadommDisplay = document.getElementById('ripadommDisplay');
 				// Lógica específica para verificar ripadomm e ripado
-				if (!ripadommValue && id === 'ripado' && value > 0) {
+				if (!ripadommValue && id === 'ripado' && value > 0.2) {
 					// Caso o valor de ripadomm não exista e ripado exista
 					value = `${value}`;
 					if (ripadommDisplay) {
 						ripadommDisplay.textContent = ` ---> Conferir Medida MM`;  // Atualiza o conteúdo do span
 					}
-				} else if (ripadommValue && id === 'ripado' && value > 0) {
+				} else if (ripadommValue && id === 'ripado' && value > 0.2) {
 					// Caso ambos ripadomm e ripado existam
 					value = `${value}`;
 					if (ripadommDisplay) {
