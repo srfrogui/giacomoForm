@@ -518,7 +518,7 @@
         <div class="importPDF">
             <div>
                 <h2>Importar Dados de PDF</h2>
-                <input type="file" id="pdf-upload" accept="application/pdf, .banana"><br><br>
+                <input type="file" id="pdf-upload" accept="application/pdf, .vendas"><br><br>
             </div>
             <div>
                 <button type="button" id="seuBotao">Visualizar Dados</button>
@@ -693,7 +693,7 @@
                 var reader = new FileReader();
                 
                 // Verifica se o arquivo é um JSON
-                if (file.name.endsWith('.banana')) {
+                if (file.name.endsWith('.vendas')) {
                     reader.onload = function (e) {
                         var jsonData = JSON.parse(e.target.result);
                         
