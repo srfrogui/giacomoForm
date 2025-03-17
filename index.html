@@ -78,6 +78,12 @@
             flex-direction: row;
             justify-content: space-around;
             align-items: center;
+			gap: 20px;
+        }
+		
+		.importPDF label{
+			border: 1px solid green; /* Borda fina preta */
+			border-radius: 8px; /* Cantos arredondados */
         }
 
         .divTable {
@@ -306,7 +312,7 @@
 <body>
     <div id="snow-container"></div>
     <div class="forms">
-        <span style="position: fixed;opacity: 0.2;">v11</span>
+        <span style="position: fixed;opacity: 0.2;">v12</span>
         <div class="divTable">
             <table border="2" id="tabelaFormulario" class="tabelaFormulario">
                 <thead>
@@ -656,6 +662,10 @@
                         <label>
                             <input class="no-print" type="checkbox" id="changePrintMargins"> 🙂‍↕️ModoCalvo🙂‍↕️
                         </label>
+						
+						<label>
+							<input type="checkbox" id="duasViasCheckbox" class="no-print" checked> ✌️ Imprimir duas vias ✌️
+						</label>
                     </div>
                     <button class="no-print" onclick="imprimir()">Imprimir</button>
         </div>
@@ -805,14 +815,71 @@
             document.querySelector('.conferenciaDados').style.display = 'none';
         }
 
-        function imprimir() {
-            window.print();
+		function imprimir() {
+			const duasVias = document.getElementById('duasViasCheckbox').checked;
+
+			if (duasVias) {
+				// Salvar a referência original da tabela e seu container
+				const tabelaOriginal = document.getElementById('tabelaVisualizacao');
+				const containerOriginal = tabelaOriginal.parentElement;
+
+				// Salvar o título original da tabela
+				const cabecalho = tabelaOriginal.querySelector('thead tr th center');
+				const tituloOriginal = cabecalho.innerHTML; // Salvar o título original
+
+				// Modificar o título da tabela original para "PRODUCAO -- FICHA DE ACOMPANHAMENTO DE PROCESSO -- PRODUCAO"
+				cabecalho.innerHTML = 'PRODUCAO -- FICHA DE ACOMPANHAMENTO DE PROCESSO -- PRODUCAO';
+
+				// Clonar a tabela para criar a segunda via
+				const tabela2 = tabelaOriginal.cloneNode(true);
+
+				// Modificar o conteúdo do cabeçalho da segunda via para "LIBERACAO -- FICHA DE ACOMPANHAMENTO DE PROCESSO -- LIBERACAO"
+				const cabecalho2 = tabela2.querySelector('thead tr th center');
+				cabecalho2.innerHTML = 'LIBERACAO -- FICHA DE ACOMPANHAMENTO DE PROCESSO -- LIBERACAO';
+
+				// Criar uma área para a segunda página
+				const div = document.createElement('div');
+				div.style.fontFamily = 'Arial, sans-serif';
+				div.style.textAlign = 'center';
+
+				// Adicionar a primeira via (tabela original modificada) à página
+				const folha1 = document.createElement('div');
+				folha1.appendChild(tabelaOriginal); // Usar a tabela original diretamente
+				div.appendChild(folha1);
+
+				// Adicionar a segunda via (tabela clonada e modificada) em uma nova página
+				const folha2 = document.createElement('div');
+				folha2.style.pageBreakBefore = 'always'; // Quebra de página antes da segunda via
+				folha2.appendChild(tabela2); // A segunda via com o título "LIBERACAO"
+				div.appendChild(folha2);
+
+				// Adiciona as páginas ao corpo da página para imprimir
+				document.body.appendChild(div);
+
+				// Espera um momento antes de imprimir e remover as páginas
+				window.print();
+				document.body.removeChild(div); // Remover as vias após impressão
+
+				// Restaurar a tabela original no seu local original
+				containerOriginal.appendChild(tabelaOriginal);
+
+				// Restaurar o título original da tabela
+				cabecalho.innerHTML = tituloOriginal;
+			} else {
+				// Imprimir normalmente (sem a segunda via)
+				window.print();
+			}
+			
 			ripadommValue = null;
-        }
+		}
+
 
 
 		document.getElementById('seuBotao').addEventListener('click', mostrarVisualizacao);
 		function mostrarVisualizacao(event) {
+				var camposVazios = [];
+				var dados = document.querySelectorAll('.forms input, .forms select');
+		
 			// Verifica se a tecla Shift está pressionada durante o clique
 			if (event.shiftKey) {
 				// Se Shift estiver pressionado, bypass nos erros
@@ -820,9 +887,6 @@
 			} else {
 				// Limpar mensagens de erro
 				document.getElementById('errorMessages').textContent = '';
-
-				var camposVazios = [];
-				var dados = document.querySelectorAll('.forms input, .forms select');
 
 				// Verificar se algum campo está vazio
 				dados.forEach(function (input) {
