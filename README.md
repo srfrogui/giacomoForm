@@ -20,7 +20,3 @@ Para executar o GiacomoForm, siga estes passos:
 4. Um terminal será aberto. Insira o host onde o Flask será executado.
 
 Dentro da pasta `import`, há um PDF de pedido de fábrica para testar o sistema. Preencha todos os campos e clique em "Enviar" para visualizar o formulário preenchido. Se necessário, é possível imprimir o formulário.
-
-## Dúvidas
-
-Se tiver alguma dúvida, estou à disposição para ajudar.
